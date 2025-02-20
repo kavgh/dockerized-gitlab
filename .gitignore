@@ -1,4 +1,5 @@
 data/
 git/
 logs/
+!config/gitlab.rb
 config/
