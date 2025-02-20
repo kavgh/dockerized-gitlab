@@ -12,4 +12,4 @@ services:
       - ./config/:/etc/gitlab
       - ./git/logs/:/var/log/gitlab
       - ./data/:/var/opt/gitlab
-    restart: unless_stopped
+    restart: unless-stopped
