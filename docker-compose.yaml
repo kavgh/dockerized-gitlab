@@ -10,6 +10,24 @@ services:
       - 22:22
     volumes:
       - ./config/:/etc/gitlab
-      - ./git/logs/:/var/log/gitlab
+      - ./logs/:/var/log/gitlab
       - ./data/:/var/opt/gitlab
+    depends_on:
+      - acme
     restart: unless-stopped
+
+  acme:
+    container_name: acme
+    image: smallstep/step-ca:0.28.1
+    hostname: "acme.example.com"
+    environment:
+      - DOCKER_STEPCA_INIT_NAME=acme
+      - DOCKER_STEPCA_INIT_DNS_NAMES=acme
+    ports:
+      - 9000:9000
+    volumes:
+      - step:/home/step
+    restart: unless-stopped
+
+volumes:
+  step: {}
