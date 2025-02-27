@@ -3,7 +3,7 @@ services:
   gitlab:
     container_name: gitlab
     image: gitlab/gitlab-ce:17.9.0-ce.0
-    hostname: "gitlab.example.com"
+    hostname: "gitlab.test"
     ports:
       - 80:80
       - 443:443
@@ -19,15 +19,15 @@ services:
   acme:
     container_name: acme
     image: smallstep/step-ca:0.28.1
-    hostname: "acme.example.com"
+    hostname: "acme.test"
     environment:
-      - DOCKER_STEPCA_INIT_NAME=acme
-      - DOCKER_STEPCA_INIT_DNS_NAMES=acme
+      - DOCKER_STEPCA_INIT_NAME=acme.test
+      - DOCKER_STEPCA_INIT_DNS_NAMES=localhost
     ports:
       - 9000:9000
     volumes:
-      - step:/home/step
+      - ./step:/home/step
     restart: unless-stopped
 
-volumes:
-  step: {}
+#volumes:
+#  step: {}
