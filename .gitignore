@@ -1,5 +1,7 @@
-data/
-git/
-logs/
 !config/gitlab.rb
+!resources/step.env
+data/
+logs/
 config/
+step/
+resources/
