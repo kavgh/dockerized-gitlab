@@ -12,22 +12,23 @@ services:
       - ./config/:/etc/gitlab
       - ./logs/:/var/log/gitlab
       - ./data/:/var/opt/gitlab
+      - ./step/ssl:/etc/gitlab/ssl:z
     depends_on:
       - acme
-    restart: unless-stopped
+    #restart: unless-stopped
 
   acme:
-    container_name: acme
+    container_name: git-acme
     image: smallstep/step-ca:0.28.1
-    hostname: "acme.example.com"
-    environment:
-      - DOCKER_STEPCA_INIT_NAME=acme
-      - DOCKER_STEPCA_INIT_DNS_NAMES=acme
+    #hostname: "acme.example.com"
+    env_file:
+      - ./resources/step.env
     ports:
       - 9000:9000
     volumes:
-      - step:/home/step
+      - ./step:/home/step
+      - ./step/ssl:/home/step/ssl:z
     restart: unless-stopped
 
-volumes:
-  step: {}
+#volumes:
+ # step: {}

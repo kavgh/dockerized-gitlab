@@ -12,9 +12,10 @@ gitlab_rails['usage_ping_enabled'] = false
 ##= https://docs.gitlab.com/omnibus/settings/ssl/ =##
 ##=================================================##
 
-external_url "https://192.168.0.28"
+external_url "https://localhost"
 
-letsencrypt['acme_staging_endpoint'] = 'https://acme:9000'
-letsencrypt['acme_production_endpoint'] = 'https://acme:9000'
+letsencrypt['acme_staging_endpoint'] = 'https://acme:9000/acme/acme-1/directory'
+letsencrypt['acme_production_endpoint'] = 'https://acme:9000/acme/acme-1/directory'
+#letsencrypt['alt_names'] = ['192.168.0.28', '*.192.168.0.28']
 
 nginx['redirect_http_to_https'] = true
