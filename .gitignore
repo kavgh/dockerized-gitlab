@@ -1,5 +1,7 @@
 !config/gitlab.rb
 !resources/step.env
+!resources/cmd.sh
+!resources/issue-cert.sh
 data/
 logs/
 config/
