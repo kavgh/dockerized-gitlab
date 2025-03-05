@@ -9,7 +9,8 @@ services:
       - 443:443
       - 22:22
     environment:
-      - SUBJECT=localhost
+      - DNS_NAME=localhost
+      - CERT_NOTAFTER=5m
     volumes:
       - ./config/:/etc/gitlab
       - ./logs/:/var/log/gitlab
@@ -17,6 +18,7 @@ services:
       - ./step/config/defaults.json:/defaults.json:z
       - ./step/secrets/password:/password:z
       - ./resources/cmd.sh:/cmd.sh
+      - ./resources/step-cli_0.28.3-1_amd64.deb:/home/step-cli_amd64.deb
     command: ["/cmd.sh"]
     depends_on:
       - acme
@@ -30,6 +32,3 @@ services:
     volumes:
       - ./step:/home/step
     restart: unless-stopped
-
-#volumes:
- # step: {}
