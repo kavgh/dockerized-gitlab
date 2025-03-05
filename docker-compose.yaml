@@ -3,14 +3,13 @@ services:
   gitlab:
     container_name: gitlab
     image: gitlab/gitlab-ce:17.9.0-ce.0
-    hostname: "gitlab.test"
     ports:
       - 80:80
       - 443:443
       - 22:22
     environment:
-      - DNS_NAME=localhost
-      - CERT_NOTAFTER=5m
+      - DNS_NAME=gitlab.vpn.test
+      - CERT_SANS=gitlab.vpn.test,www.gitlab.vpn.test
     volumes:
       - ./config/:/etc/gitlab
       - ./logs/:/var/log/gitlab

@@ -27,9 +27,10 @@ function get_certificate() {
         args=(--contact "$CERT_EMAIL" "${args[@]}")
     fi
 
-    while IFS=',' read -r san; do
+    IFS=','
+    for san in $SANS; do
         args=(--san "$san" "${args[@]}")
-    done <<< "$SANS"
+    done
 
     /usr/bin/mkdir -p /etc/gitlab/ssl && /usr/bin/chmod 755 /etc/gitlab/ssl
     /usr/bin/step-cli ca certificate "${args[@]}"
