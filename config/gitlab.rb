@@ -12,7 +12,7 @@ gitlab_rails['usage_ping_enabled'] = false
 ##= https://docs.gitlab.com/omnibus/settings/ssl/ =##
 ##=================================================##
 
-external_url "https://localhost"
+external_url "https://#{ENV['DNS_NAME']}"
 
 nginx['redirect_http_to_https'] = true
 
