@@ -8,7 +8,7 @@ services:
       - 443:443
       - 22:22
     environment:
-      - DNS_NAME=gitlab.vpn.test
+      - DNS_NAME=localhost
       - CERT_SANS=gitlab.vpn.test,www.gitlab.vpn.test
     volumes:
       - ./config/:/etc/gitlab
@@ -18,6 +18,13 @@ services:
       - ./step/secrets/password:/password:z
       - ./resources/cmd.sh:/cmd.sh
       - ./resources/step-cli_0.28.3-1_amd64.deb:/home/step-cli_amd64.deb
+    healthcheck:
+      test: ["CMD-SHELL", "curl -k https://localhost/users/sign_in"]
+      interval: 2m
+      timeout: 5s
+      retries: 5
+      start_period: 2m
+      start_interval: 30s
     command: ["/cmd.sh"]
     depends_on:
       - acme
@@ -30,4 +37,12 @@ services:
       - ./resources/step.env
     volumes:
       - ./step:/home/step
+    ports:
+      - 9000:9000
+    healthcheck:
+      test: ["CMD-SHELL", "curl -k https://localhost:9000/health"]
+      interval: 1m30s
+      timeout: 3s
+      retries: 5
+      start_period: 1s
     restart: unless-stopped
