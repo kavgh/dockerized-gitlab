@@ -19,7 +19,7 @@ services:
       - ./resources/cmd.sh:/cmd.sh
       - ./resources/step-cli_0.28.3-1_amd64.deb:/home/step-cli_amd64.deb
     healthcheck:
-      test: ["CMD-SHELL", "curl -k https://localhost/users/sign_in"]
+      test: ["CMD-SHELL", "curl -k https://gitlab/users/sign_in"]
       interval: 2m
       timeout: 5s
       retries: 5
@@ -37,10 +37,8 @@ services:
       - ./resources/step.env
     volumes:
       - ./step:/home/step
-    ports:
-      - 9000:9000
     healthcheck:
-      test: ["CMD-SHELL", "curl -k https://localhost:9000/health"]
+      test: ["CMD-SHELL", "curl -k https://acme:9000/health"]
       interval: 1m30s
       timeout: 3s
       retries: 5
