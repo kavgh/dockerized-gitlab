@@ -2,22 +2,27 @@
 services:
   gitlab:
     container_name: gitlab
-    image: gitlab/gitlab-ce:17.9.0-ce.0
+    image: direness/gitlab
+    build: 
+      context: .
+      dockerfile: dockerfiles/gitlab.Dockerfile
     ports:
       - 80:80
       - 443:443
       - 22:22
+    secrets:
+      - acme_pass
+      - acme_config
     environment:
       - DNS_NAME=localhost
-      - CERT_SANS=gitlab.vpn.test,www.gitlab.vpn.test
+      - REDIS_PASSWORD=$REDIS_PASSWORD
+      - ACME_PASSWORD=/run/secrets/acme_pass
+      - ACME_CONFIG=/run/secrets/acme_config
+      - CERT_SANS=gitlab.vpn.test,www.gitlab.vpn.test,localhost
     volumes:
       - ./config/:/etc/gitlab
       - ./logs/:/var/log/gitlab
       - ./data/:/var/opt/gitlab
-      - ./step/config/defaults.json:/defaults.json:z
-      - ./step/secrets/password:/password:z
-      - ./resources/cmd.sh:/cmd.sh
-      - ./resources/step-cli_0.28.3-1_amd64.deb:/home/step-cli_amd64.deb
     networks:
       - fronted
       - backend
@@ -28,22 +33,28 @@ services:
       retries: 5
       start_period: 2m
       start_interval: 30s
-    command: ["/cmd.sh"]
     depends_on:
       - acme
+      - redis
     restart: unless-stopped
 
   acme:
     container_name: git-acme
     image: smallstep/step-ca:0.28.1
-    env_file:
-      - ./resources/step.env
+    secrets:
+      - acme_pass
+    environment:
+      - DOCKER_STEPCA_INIT_NAME=acme
+      - DOCKER_STEPCA_INIT_DNS_NAMES=localhost,acme
+      - DOCKER_STEPCA_INIT_PROVISIONER_NAME=acme
+      - DOCKER_STEPCA_INIT_REMOTE_MANAGEMENT=true
+      - DOCKER_STEPCA_INIT_PASSWORD_FILE=/run/secrets/acme_pass
     volumes:
       - ./step:/home/step
     networks:
       - backend
     healthcheck:
-      test: ["CMD-SHELL", "curl -k https://acme:9000/health"]
+      test: ["CMD-SHELL", "curl --cacert /home/step/certs/root_ca.crt https://acme:9000/health"]
       interval: 1m30s
       timeout: 3s
       retries: 5
@@ -51,17 +62,31 @@ services:
     restart: unless-stopped
 
   redis:
-    container_name: redis
-    image: redis/redis-stack-server:7.4.0-v3
+    container_name: git-redis
+    image: direness/redis
+    build:
+      context: .
+      dockerfile: dockerfiles/redis.Dockerfile
+    command: ["/opt/redis-stack/bin/redis-server", "/etc/redis/redis.conf", "--requirepass $REDIS_PASSWORD"]
     deploy:
       resources:
         limits:
-          memory: 512mb
-    volumes:
-      - ./resources/redis.conf:/etc/redis-stack.conf:ro
+          memory: 1gb
+    healthcheck:
+      test: ["CMD-SHELL", "redis-cli ping | grep PONG"]
+      interval: 1m
+      timeout: 3s
+      retries: 5
     networks:
       - backend
+    restart: unless-stopped
 
 networks:
   fronted:
   backend:
+
+secrets:
+  acme_pass:
+    file: ./resources/password
+  acme_config:
+    file: ./step/config/defaults.json
