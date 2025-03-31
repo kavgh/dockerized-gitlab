@@ -2,14 +2,14 @@
 
 set -eo pipefail
 
-function download_and_init_stepcli() {
-    /usr/bin/dpkg -i /home/step-cli_amd64.deb
-    /usr/bin/grep fingerprint /defaults.json | /usr/bin/cut -d '"' -f4 | /usr/bin/xargs -i /usr/bin/step-cli ca bootstrap --ca-url https://acme:9000 --fingerprint {} --install
+function init_stepcli() {
+    /usr/bin/grep fingerprint ${ACME_CONFIG} | /usr/bin/cut -d '"' -f4 | \
+    /usr/bin/xargs -i /usr/bin/step-cli ca bootstrap --ca-url https://acme:9000 --fingerprint {} --install
 }
 
 function get_certificate() {
     SANS=${CERT_SANS:-$DNS_NAME}
-    local -a args=( --password-file "/password" "${DNS_NAME}" "/etc/gitlab/ssl/${DNS_NAME}.crt" "/etc/gitlab/ssl/${DNS_NAME}.key" )
+    local -a args=( --password-file "${ACME_PASSWORD}" "${DNS_NAME}" "/etc/gitlab/ssl/${DNS_NAME}.crt" "/etc/gitlab/ssl/${DNS_NAME}.key" )
 
     if [[ ! -z "${CERT_NOTAFTER}" ]]; then
         args=(--not-after "$CERT_NOTAFTER" "${args[@]}")
@@ -41,7 +41,7 @@ function renew_certificate() {
     -- ca renew --daemon --exec "/opt/gitlab/bin/gitlab-ctl hup nginx" /etc/gitlab/ssl/$DNS_NAME.crt /etc/gitlab/ssl/$DNS_NAME.key
 }
 
-download_and_init_stepcli
+init_stepcli
 get_certificate
 renew_certificate
 /assets/wrapper
