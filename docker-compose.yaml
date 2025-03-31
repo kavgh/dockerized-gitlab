@@ -18,6 +18,9 @@ services:
       - ./step/secrets/password:/password:z
       - ./resources/cmd.sh:/cmd.sh
       - ./resources/step-cli_0.28.3-1_amd64.deb:/home/step-cli_amd64.deb
+    networks:
+      - fronted
+      - backend
     healthcheck:
       test: ["CMD-SHELL", "curl -k https://gitlab/users/sign_in"]
       interval: 2m
@@ -37,6 +40,8 @@ services:
       - ./resources/step.env
     volumes:
       - ./step:/home/step
+    networks:
+      - backend
     healthcheck:
       test: ["CMD-SHELL", "curl -k https://acme:9000/health"]
       interval: 1m30s
@@ -44,3 +49,19 @@ services:
       retries: 5
       start_period: 1s
     restart: unless-stopped
+
+  redis:
+    container_name: redis
+    image: redis/redis-stack-server:7.4.0-v3
+    deploy:
+      resources:
+        limits:
+          memory: 512mb
+    volumes:
+      - ./resources/redis.conf:/etc/redis-stack.conf:ro
+    networks:
+      - backend
+
+networks:
+  fronted:
+  backend:
