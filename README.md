@@ -24,6 +24,9 @@ Besides GitLab, there are also [Redis] for caching StepCA for ACME certificate.
 ## Redis
 
 - `REDIS_PASSWORD` Redis password
+
+## Secrets
+
 - `acme_pass` Path to ACME password. Default is `./resources/password`
 - `acme_config` Path to ACME config. Default is `./step/config/defaults.json`
 
