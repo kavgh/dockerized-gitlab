@@ -7,38 +7,25 @@ Besides GitLab, there are also [Redis] for caching StepCA for ACME certificate.
 
 ## GitLab
 
-### Required
-
-`DNS_NAME` DNS name of the GitLab
-`REDIS_PASSWORD` Redis password
-`CERT_SANS` Comma separated SANs
-
-### Optional
-
-`CERT_EMAIL` Your email address
-`CERT_NOTBEFORE` Period when the certificate validity starts
-`CERT_NOTAFTER` Period when the certificate validity ends
+- `DNS_NAME` DNS name of the GitLab
+- `REDIS_PASSWORD` Redis password
+- `CERT_SANS` Comma separated SANs
+- `CERT_EMAIL` Your email address
+- `CERT_NOTBEFORE` Period when the certificate validity starts
+- `CERT_NOTAFTER` Period when the certificate validity ends
 
 ## StepCA
 
-### Required
-
-`DOCKER_STEPCA_INIT_NAME` Name of certificate issuer
-`DOCKER_STEPCA_INIT_DNS_NAMES` DNS names or IPs by which ACME will accept requests, separated by commas
-
-### Optional
-
-`DOCKER_STEPCA_INIT_REMOTE_MANAGEMENT` enable [remote provisioner management](https://smallstep.com/docs/step-ca/provisioners#remote-provisioner-management)
-`DOCKER_STEPCA_INIT_PROVISIONER_NAME` a label for the initial admin (JWK) provisioner. Default: "admin"
+- `DOCKER_STEPCA_INIT_NAME` Name of certificate issuer
+- `DOCKER_STEPCA_INIT_DNS_NAMES` DNS names or IPs by which ACME will accept requests, separated by commas
+- `DOCKER_STEPCA_INIT_REMOTE_MANAGEMENT` enable [remote provisioner management](https://smallstep.com/docs/step-ca/provisioners#remote-provisioner-management)
+- `DOCKER_STEPCA_INIT_PROVISIONER_NAME` a label for the initial admin (JWK) provisioner. Default: "admin"
 
 ## Redis
 
-`REDIS_PASSWORD` Redis password
-
-## Secrets
-
-`acme_pass` Path to ACME password. Default is `./resources/password`
-`acme_config` Path to ACME config. Default is `./step/config/defaults.json`
+- `REDIS_PASSWORD` Redis password
+- `acme_pass` Path to ACME password. Default is `./resources/password`
+- `acme_config` Path to ACME config. Default is `./step/config/defaults.json`
 
 # Configuration
 
