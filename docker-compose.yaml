@@ -27,7 +27,7 @@ services:
       - fronted
       - backend
     healthcheck:
-      test: ["CMD-SHELL", "curl -k https://gitlab/users/sign_in"]
+      test: ["CMD-SHELL", "curl --cacert /root/.step/certs/root_ca.crt https://gitlab/users/sign_in"]
       interval: 2m
       timeout: 5s
       retries: 5
@@ -54,7 +54,7 @@ services:
     networks:
       - backend
     healthcheck:
-      test: ["CMD-SHELL", "curl --cacert /home/step/certs/root_ca.crt https://acme:9000/health"]
+      test: ["CMD-SHELL", "step ca health"]
       interval: 1m30s
       timeout: 3s
       retries: 5
@@ -71,7 +71,7 @@ services:
     deploy:
       resources:
         limits:
-          memory: 1gb
+          memory: 2gb
     healthcheck:
       test: ["CMD-SHELL", "redis-cli ping | grep PONG"]
       interval: 1m
