@@ -44,4 +44,4 @@ function renew_certificate() {
 init_stepcli
 get_certificate
 renew_certificate
-/assets/wrapper
+/assets/init-container

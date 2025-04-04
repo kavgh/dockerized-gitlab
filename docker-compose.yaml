@@ -27,7 +27,7 @@ services:
       - fronted
       - backend
     healthcheck:
-      test: ["CMD-SHELL", "curl --cacert /root/.step/certs/root_ca.crt https://gitlab/users/sign_in"]
+      test: ["CMD-SHELL", "/opt/gitlab/bin/gitlab-healthcheck"]
       interval: 2m
       timeout: 5s
       retries: 5
